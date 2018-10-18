@@ -1,13 +1,18 @@
 #include "Led.h"
+#include "Ultrasonic.h"
+#include "ServoConfig.h"
 
-Led led(11, 10, 9);
+Led led(6, 5);
+// Ultrasonic ultrasonic;
+ ServoConfig servito;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  servito.setPin(2);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  led.redOn(50);
+  // led.redFade(10, 5);
+  // servito.rotate(0, 90, 1500);
 }
