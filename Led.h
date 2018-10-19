@@ -10,7 +10,7 @@ class Led
     bool toggle;
 
   public:
-    Led(int r, int b) {
+    set (int r, int b) {
       toggle = true;
       redPin = r;
       bluePin = b;
@@ -21,29 +21,29 @@ class Led
       analogWrite(redPin, 0);
       analogWrite(bluePin, 0);
     }
-    void redOn(int fadeSpeed = 200)
+    void redOn(int fadeSpeed = 100, int level = 256)
     {
-      if (red < 256 && d.Timeout())
+      if (red < level && d.Timeout())
       {
         analogWrite(redPin, red);
-        Serial.println(red);
+        // Serial.println(red);
         red++;
         d.Delay(fadeSpeed);
       }
     }
-    void redOff(int fadeSpeed = 200)
+    void redOff(int fadeSpeed = 100)
     {
       if (red > 0 && d.Timeout())
       {
         analogWrite(redPin, red);
-        Serial.println(red);
+        // Serial.println(red);
         red--;
         d.Delay(fadeSpeed);
       }
     }
-    void blueOn(int fadeSpeed = 200)
+    void blueOn(int fadeSpeed = 100, int level = 256)
     {
-      if (blue < 256 && d.Timeout())
+      if (blue < level && d.Timeout())
       {
         analogWrite(bluePin, blue);
         // Serial.println(blue);
@@ -51,7 +51,7 @@ class Led
         d.Delay(fadeSpeed);
       }
     }
-    void blueOff(int fadeSpeed = 200)
+    void blueOff(int fadeSpeed = 100)
     {
       if (blue > 0 && d.Timeout())
       {
