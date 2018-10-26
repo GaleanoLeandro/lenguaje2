@@ -46,23 +46,23 @@ class Ultrasonic {
       distance = (duration/2) / 29;  // función copiada de un tutorial
       // Serial.println(distance);
 
-      if (count >= 15) {
+      if (count >= 10) {
         restart();
-        Serial.print("state ");
-        Serial.println(state);
+        // Serial.print("state ");
+        // Serial.println(state);
       }
 
       if (state == "start") {
         if (d.Timeout()) {
           count++;
-          Serial.print("count ");
-          Serial.println(count);
+          // Serial.print("count ");
+          // Serial.println(count);
           d.Delay(1000);
         }
-      } else if (state == "rejected") {
+      } else if (state == "nouser") {
         delay(restartTime); // Espera 5 segundos desp de rechazar para volver a evaluar si alguien se acerca
         restart();
-        Serial.println("Estado reiniciado");
+        // Serial.println("Estado reiniciado");
       }
     }
     void restart () {
@@ -80,8 +80,8 @@ class Ultrasonic {
         if (state == "standby") {
           delay(random(1500, 3500));
           isSelected = random(2);
-          Serial.print("isSelected ");
-          Serial.println(isSelected);
+          // Serial.print("isSelected ");
+          // Serial.println(isSelected);
           if (isSelected) {
             state = "start";
           } else {
@@ -90,7 +90,7 @@ class Ultrasonic {
         }
         return isSelected;
       } else if (distance > limit && state != "standby") {
-        state = "rejected";
+        state = "nouser";
       }
       return;
     }

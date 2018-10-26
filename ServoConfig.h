@@ -7,8 +7,10 @@ private:
   NonBlockDelay d;
   int servoPin;
   int angle;
+  bool toggle = true;
   int minPulse = 650;
   int maxPulse = 2550;
+  int count;
 
 public:
   void setPin(int pin) {
@@ -21,6 +23,20 @@ public:
       servo.write(angle);
       d.Delay(delayTime);
     }
+  }
+  void reject (int ang = 20) {
+    int oldAngle = angle - ang;
+
+    if (d.Timeout() && count < 2) {
+      angle = (toggle) ? angle + ang : oldAngle;
+      toggle = !toggle;
+      servo.write(angle);
+      count++;
+      d.Delay(200);
+    }
+  }
+  void restart () {
+    count = 0;
   }
   void off () {
     servo.detach();

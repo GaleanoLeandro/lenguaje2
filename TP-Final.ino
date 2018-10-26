@@ -15,15 +15,16 @@ void setup() {
 }
 
 void loop() {
-  // servito.rotate(0, 90, 500);
   ultrasonic.on();
   ultrasonic.select();
 
+  if (ultrasonic.state == "standby") {
+    servito.restart();
+  }
   if (ultrasonic.state == "start") {
     servito.rotate(0, 90, 2000);
   }
-
-  // if (ultrasonic.state == "reject") {
-    // ... efecto de luz roja.
-  // }
+  if (ultrasonic.state == "rejected") {
+    servito.reject();
+  }
 }
