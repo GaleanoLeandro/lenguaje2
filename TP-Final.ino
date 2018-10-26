@@ -15,14 +15,15 @@ void setup() {
 }
 
 void loop() {
-  // servito.rotate(0, 90, 1500);
+  // servito.rotate(0, 90, 500);
   ultrasonic.on();
-  if (ultrasonic.getDistance() < 15) {
-    led.blueOff(5);
-    led.redOn(10);
-  } else if (ultrasonic.getDistance() > 15)
-  {
-    led.redOff(5);
-    led.blueOn(10);
+  ultrasonic.select();
+
+  if (ultrasonic.state == "start") {
+    servito.rotate(0, 90, 2000);
   }
+
+  // if (ultrasonic.state == "reject") {
+    // ... efecto de luz roja.
+  // }
 }

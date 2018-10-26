@@ -22,4 +22,7 @@ public:
       d.Delay(delayTime);
     }
   }
+  void off () {
+    servo.detach();
+  }
 };

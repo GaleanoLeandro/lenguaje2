@@ -10,7 +10,7 @@ class Led
     bool toggle;
 
   public:
-    set (int r, int b) {
+    void set (int r, int b) {
       toggle = true;
       redPin = r;
       bluePin = b;
