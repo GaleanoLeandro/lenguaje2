@@ -14,14 +14,18 @@ class Ultrasonic {
     int distance;
     bool isSelected;
     int count;
+    // variables timer para activar sensor
+    unsigned long previousMillis = 0; //will store last time viewTime was updated
+    unsigned long previousMicros = 0; // will sotre last time TRIGGER was updated
+    unsigned long viewTime = 200;
+    long OnTime = 10; //microseconds of on-time
+    long OffTime = 2; //microseconds of off-time
+    int triggerState = LOW;
 
   public:
-    String state;
-    // restartT tiempo en el que se mantiene "bloqueado" y desp se reinicia
-    void set (int trig, int echo, int restartT = 5000)
+    String state = "standby";
+    void set (int trig, int echo)
     {
-      state = "standby";
-      restartTime = restartT;
       trigPin = trig;
       echoPin = echo;
 
@@ -29,41 +33,55 @@ class Ultrasonic {
       pinMode(echoPin, INPUT);
     }
     void on () {
-      // if (d1.Timeout())
-      // { 
-        // trigState = (trigState == LOW) ? HIGH : LOW; //toggle state
-        // delayTime = (delayTime == 0,010) ? 0,002 : 0,010; //toggle time
-        // digitalWrite(trigPin, trigState);
-        // d1.Delay(delayTime);
-      // }
-      digitalWrite(trigPin, LOW);
-      delayMicroseconds(2);
-      digitalWrite(trigPin, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(trigPin, LOW);
+
+      // check to see if it's time to change the state of the TRIGGER
+      unsigned long currentMicros = micros();
+
+      if ((triggerState == LOW) && (currentMicros - previousMicros >= OffTime))
+      {
+        triggerState = HIGH; // turn it on
+        previousMicros = currentMicros; // remember the time
+        digitalWrite(trigPin, triggerState); // update the actual trigger
+      }
+      else if ((triggerState == HIGH) && (currentMicros - previousMicros >= OnTime))
+      {
+        triggerState = LOW; // turn it off
+        previousMicros = currentMicros; // remember the time
+        digitalWrite(trigPin, triggerState); // update the actual trigger
+      }
 
       duration = pulseIn(echoPin, HIGH);
-      distance = (duration/2) / 29;  // función copiada de un tutorial
-      // Serial.println(distance);
 
-      if (count >= 10) {
-        restart();
+      unsigned long currentMillis = millis();
+
+      if (currentMillis - previousMillis >= viewTime)
+      {
+        previousMillis = currentMillis; // remember the time
+      } else {
+        distance = (duration / 2) / 29; // función copiada de un tutorial
+      }
+
+      Serial.print("distance: ");
+      Serial.println(distance);
+
+      // if (count >= 10) {
+        // restart();
         // Serial.print("state ");
         // Serial.println(state);
-      }
+      // }
 
-      if (state == "start") {
-        if (d.Timeout()) {
-          count++;
+      // if (state == "start") {
+        // if (d.Timeout()) {
+          // count++;
           // Serial.print("count ");
           // Serial.println(count);
-          d.Delay(1000);
-        }
-      } else if (state == "nouser") {
-        delay(restartTime); // Espera 5 segundos desp de rechazar para volver a evaluar si alguien se acerca
-        restart();
+          // d.Delay(1000);
+        // }
+      // } else if (state == "nouser") {
+        // delay(5000); // Espera 5 segundos desp de rechazar para volver a evaluar si alguien se acerca
+        // restart();
         // Serial.println("Estado reiniciado");
-      }
+      // }
     }
     void restart () {
       state = "standby";
