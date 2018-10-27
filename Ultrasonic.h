@@ -3,10 +3,11 @@ Estados del sensor
 standby = disponible para aceptar o rechazar a alguien.
 start = aceptó a alguien.
 rejected = rechazo a alguien.
+nouser = el usuario se alejó.
 */
 class Ultrasonic {
   private:
-    NonBlockDelay d;
+    NonBlockDelay d, d1;
     int trigPin;
     int echoPin;
     int restartTime;
@@ -40,15 +41,13 @@ class Ultrasonic {
       if ((triggerState == LOW) && (currentMicros - previousMicros >= OffTime))
       {
         triggerState = HIGH; // turn it on
-        previousMicros = currentMicros; // remember the time
-        digitalWrite(trigPin, triggerState); // update the actual trigger
       }
       else if ((triggerState == HIGH) && (currentMicros - previousMicros >= OnTime))
       {
         triggerState = LOW; // turn it off
-        previousMicros = currentMicros; // remember the time
-        digitalWrite(trigPin, triggerState); // update the actual trigger
       }
+      previousMicros = currentMicros;      // remember the time
+      digitalWrite(trigPin, triggerState); // update the actual trigger
 
       duration = pulseIn(echoPin, HIGH);
 
@@ -61,27 +60,29 @@ class Ultrasonic {
         distance = (duration / 2) / 29; // función copiada de un tutorial
       }
 
-      Serial.print("distance: ");
-      Serial.println(distance);
+      // Serial.print("distance: ");
+      // Serial.println(distance);
 
-      // if (count >= 10) {
-        // restart();
+      if (count >= 10) {
+        restart();
         // Serial.print("state ");
         // Serial.println(state);
-      // }
+      }
 
-      // if (state == "start") {
-        // if (d.Timeout()) {
-          // count++;
+      if (state == "start") {
+        if (d.Timeout()) {
+          count++;
           // Serial.print("count ");
           // Serial.println(count);
-          // d.Delay(1000);
-        // }
-      // } else if (state == "nouser") {
-        // delay(5000); // Espera 5 segundos desp de rechazar para volver a evaluar si alguien se acerca
-        // restart();
-        // Serial.println("Estado reiniciado");
-      // }
+          d.Delay(1000);
+        }
+      }
+      else if (state == "nouser") {
+        if (d1.onceTimeout(5000)) {
+          restart();
+          Serial.println("Estado reiniciado");
+        }
+      }
     }
     void restart () {
       state = "standby";
@@ -95,8 +96,9 @@ class Ultrasonic {
     void select (int limit = 10) {
       // limit = limite de distancia en cm para la detección
       if (distance <= limit) {
-        if (state == "standby") {
-          delay(random(1500, 3500));
+        if (state == "standby" && d.onceTimeout(random(1500, 3500)))
+        {
+          // delay();
           isSelected = random(2);
           // Serial.print("isSelected ");
           // Serial.println(isSelected);
@@ -111,8 +113,5 @@ class Ultrasonic {
         state = "nouser";
       }
       return;
-    }
-    int getDistance () {
-      return distance;
     }
 };

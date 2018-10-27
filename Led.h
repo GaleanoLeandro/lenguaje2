@@ -23,43 +23,47 @@ class Led
     }
     void redOn(int fadeSpeed = 100, int level = 256)
     {
-      if (red < level && d.Timeout())
-      {
-        analogWrite(redPin, red);
-        // Serial.println(red);
-        red++;
-        d.Delay(fadeSpeed);
-      }
+      analogWrite(redPin, 255);
+      // if (red < level && d.Timeout())
+      // {
+      //   analogWrite(redPin, red);
+      //   // Serial.println(red);
+      //   red++;
+      //   d.Delay(fadeSpeed);
+      // }
     }
     void redOff(int fadeSpeed = 100)
     {
-      if (red > 0 && d.Timeout())
-      {
-        analogWrite(redPin, red);
-        // Serial.println(red);
-        red--;
-        d.Delay(fadeSpeed);
-      }
+      analogWrite(redPin, 0);
+      // if (red > 0 && d.Timeout())
+      // {
+      //   analogWrite(redPin, red);
+      //   // Serial.println(red);
+      //   red--;
+      //   d.Delay(fadeSpeed);
+      // }
     }
     void blueOn(int fadeSpeed = 100, int level = 256)
     {
-      if (blue < level && d.Timeout())
-      {
-        analogWrite(bluePin, blue);
-        // Serial.println(blue);
-        blue++;
-        d.Delay(fadeSpeed);
-      }
+      analogWrite(bluePin, 255);
+      // if (blue < level && d.Timeout())
+      // {
+      //   analogWrite(bluePin, blue);
+      //   // Serial.println(blue);
+      //   blue++;
+      //   d.Delay(fadeSpeed);
+      // }
     }
     void blueOff(int fadeSpeed = 100)
     {
-      if (blue > 0 && d.Timeout())
-      {
-        analogWrite(bluePin, blue);
-        // Serial.println(blue);
-        blue--;
-        d.Delay(fadeSpeed);
-      }
+      analogWrite(bluePin, 0);
+      // if (blue > 0 && d.Timeout())
+      // {
+      //   analogWrite(bluePin, blue);
+      //   // Serial.println(blue);
+      //   blue--;
+      //   d.Delay(fadeSpeed);
+      // }
     }
     void redFade(int fadeIn = 200, int fadeOut = 200) {
       if (toggle)
