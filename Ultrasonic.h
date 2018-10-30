@@ -7,7 +7,7 @@ nouser = el usuario se alejó.
 */
 class Ultrasonic {
   private:
-    NonBlockDelay d, d1;
+    NonBlockDelay d, d1, d2;
     int trigPin;
     int echoPin;
     int restartTime;
@@ -19,14 +19,17 @@ class Ultrasonic {
     unsigned long previousMillis = 0; //will store last time viewTime was updated
     unsigned long previousMicros = 0; // will sotre last time TRIGGER was updated
     unsigned long viewTime = 200;
+    int delayTime;
     long OnTime = 10; //microseconds of on-time
     long OffTime = 2; //microseconds of off-time
-    int triggerState = LOW;
+    int triggerState;
 
   public:
     String state = "standby";
     void set (int trig, int echo)
     {
+      delayTime = OnTime;
+      triggerState = HIGH;
       trigPin = trig;
       echoPin = echo;
 
@@ -34,34 +37,23 @@ class Ultrasonic {
       pinMode(echoPin, INPUT);
     }
     void on () {
-
-      // check to see if it's time to change the state of the TRIGGER
-      unsigned long currentMicros = micros();
-
-      if ((triggerState == LOW) && (currentMicros - previousMicros >= OffTime))
-      {
-        triggerState = HIGH; // turn it on
+      if (d.TimeoutInMicros()) {
+        triggerState = (triggerState == HIGH) ? LOW : HIGH;
+        delayTime = (delayTime == OnTime) ? OffTime : OnTime;
+        d.DelayInMicros(delayTime);
       }
-      else if ((triggerState == HIGH) && (currentMicros - previousMicros >= OnTime))
-      {
-        triggerState = LOW; // turn it off
-      }
-      previousMicros = currentMicros;      // remember the time
       digitalWrite(trigPin, triggerState); // update the actual trigger
 
       duration = pulseIn(echoPin, HIGH);
 
-      unsigned long currentMillis = millis();
-
-      if (currentMillis - previousMillis >= viewTime)
-      {
-        previousMillis = currentMillis; // remember the time
+      if (d2.Timeout()) {
+        d2.Delay(viewTime);
       } else {
         distance = (duration / 2) / 29; // función copiada de un tutorial
       }
 
-      // Serial.print("distance: ");
-      // Serial.println(distance);
+      Serial.print("distance: ");
+      Serial.println(distance);
 
       if (count >= 10) {
         restart();
@@ -77,7 +69,7 @@ class Ultrasonic {
           d.Delay(1000);
         }
       }
-      else if (state == "nouser") {
+      if (state == "nouser") {
         if (d1.onceTimeout(5000)) {
           restart();
           Serial.println("Estado reiniciado");
@@ -98,7 +90,6 @@ class Ultrasonic {
       if (distance <= limit) {
         if (state == "standby" && d.onceTimeout(random(1500, 3500)))
         {
-          // delay();
           isSelected = random(2);
           // Serial.print("isSelected ");
           // Serial.println(isSelected);

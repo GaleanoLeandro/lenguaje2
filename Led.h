@@ -1,10 +1,9 @@
 #include "Delay.h"
 
-NonBlockDelay d;
-
 class Led
 { 
   private:
+    NonBlockDelay ledD;
     int redPin, red;
     int bluePin, blue;
     bool toggle;
@@ -65,18 +64,12 @@ class Led
       //   d.Delay(fadeSpeed);
       // }
     }
-    void redFade(int fadeIn = 200, int fadeOut = 200) {
-      if (toggle)
-      {
-        redOn(fadeIn);
-      }
-      else
-      {
-        redOff(fadeOut);
-      }
-      if (red > 253 || red < 1)
-      {
+    void reject() {
+      if (ledD.Timeout()) {
+        int level = toggle ? 220 : 0;
         toggle = !toggle;
+        analogWrite(redPin, level);
+        ledD.Delay(80);
       }
     }
 };

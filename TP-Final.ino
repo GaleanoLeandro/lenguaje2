@@ -5,7 +5,6 @@
 Led led;
 ServoConfig servito;
 Ultrasonic ultrasonic;
-NonBlockDelay del;
 
 void setup() {
   // put your setup code here, to run once:
@@ -16,6 +15,8 @@ void setup() {
 }
 
 void loop() {
+  // servito.start(3, 5);
+
   ultrasonic.on();
   ultrasonic.select();
 
@@ -25,12 +26,13 @@ void loop() {
     servito.restart();
   }
   if (ultrasonic.state == "start") {
+    servito.start(3, 15);
     led.blueOff();
     led.redOn();
-    servito.rotate(0, 90, 2000);
   }
   if (ultrasonic.state == "rejected") {
-    servito.reject();
-    // led.reject();
+    servito.reject(50);
+    led.reject();
+    led.blueOff();
   }
 }
