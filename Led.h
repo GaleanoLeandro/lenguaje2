@@ -2,8 +2,8 @@ class Led
 { 
   private:
     NonBlockDelay ledD;
-    int redPin, red;
-    int bluePin, blue;
+    int redPin;
+    int bluePin;
     bool toggle;
 
   public:
@@ -18,49 +18,21 @@ class Led
       analogWrite(redPin, 0);
       analogWrite(bluePin, 0);
     }
-    void redOn(int fadeSpeed = 100, int level = 256)
+    void redOn(int level = 255)
     {
-      analogWrite(redPin, 255);
-      // if (red < level && d.Timeout())
-      // {
-      //   analogWrite(redPin, red);
-      //   // Serial.println(red);
-      //   red++;
-      //   d.Delay(fadeSpeed);
-      // }
+      analogWrite(redPin, level);
     }
-    void redOff(int fadeSpeed = 100)
+    void redOff()
     {
       analogWrite(redPin, 0);
-      // if (red > 0 && d.Timeout())
-      // {
-      //   analogWrite(redPin, red);
-      //   // Serial.println(red);
-      //   red--;
-      //   d.Delay(fadeSpeed);
-      // }
     }
-    void blueOn(int fadeSpeed = 100, int level = 256)
+    void blueOn(int level = 255)
     {
-      analogWrite(bluePin, 255);
-      // if (blue < level && d.Timeout())
-      // {
-      //   analogWrite(bluePin, blue);
-      //   // Serial.println(blue);
-      //   blue++;
-      //   d.Delay(fadeSpeed);
-      // }
+      analogWrite(bluePin, level);
     }
-    void blueOff(int fadeSpeed = 100)
+    void blueOff()
     {
       analogWrite(bluePin, 0);
-      // if (blue > 0 && d.Timeout())
-      // {
-      //   analogWrite(bluePin, blue);
-      //   // Serial.println(blue);
-      //   blue--;
-      //   d.Delay(fadeSpeed);
-      // }
     }
     void reject() {
       if (ledD.Timeout()) {

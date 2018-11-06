@@ -10,8 +10,6 @@ class ServoConfig
   int minAngle = 0;
   int maxAngle = 180;
   bool toggle = true;
-  int minPulse = 650;
-  int maxPulse = 2550;
   int randomDir;
   int count; // Variable usada en la funcion reject para generar el movimiento de ida y vuelta solo dos veces.
 

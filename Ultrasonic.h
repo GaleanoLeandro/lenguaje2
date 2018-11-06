@@ -15,8 +15,6 @@ class Ultrasonic {
   bool isSelected;
   int count;
   // variables timer para activar sensor
-  unsigned long previousMillis = 0; //will store last time viewTime was updated
-  unsigned long previousMicros = 0; // will sotre last time TRIGGER was updated
   unsigned long viewTime = 200;
   int delayTime;
   long OnTime = 10; //microseconds of on-time
@@ -25,6 +23,7 @@ class Ultrasonic {
 
   public:
     String state = "standby";
+    bool deciding = false;
     int level = 1;
     void set (int trig, int echo)
     {
@@ -91,11 +90,13 @@ class Ultrasonic {
       level = 1;
       count = 0;
       distance = 0;
+      deciding = false;
     }
     void select (int limit = 10) {
       // limit = limite de distancia en cm para la detección
       if (distance <= limit && distance != 0 && state == "standby") {
-        if (d3.onceTimeout(random(1800, 3500))) {
+        deciding = true;
+        if (d3.onceTimeout(random(3600, 6500))) {
           isSelected = random(2);
           Serial.print("isSelected ");
           Serial.println(isSelected);
@@ -106,8 +107,8 @@ class Ultrasonic {
             state = "rejected";
           }
         }
-      } else if (distance > limit && state != "standby") {
-        state = "nouser";
+      } else {
+        deciding = false;
       }
       return;
     }
