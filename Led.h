@@ -1,5 +1,3 @@
-#include "Delay.h"
-
 class Led
 { 
   private:
@@ -69,7 +67,7 @@ class Led
         int level = toggle ? 220 : 0;
         toggle = !toggle;
         analogWrite(redPin, level);
-        ledD.Delay(80);
+        ledD.Delay(200);
       }
     }
 };
